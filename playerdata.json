@@ -1,0 +1,48 @@
+{
+    "inventory": {
+        "item1": {
+            "id": "grass",
+            "quantity": 12
+        },
+        "item2": {
+            "id": "rock",
+            "quantity": 2
+        },
+        "item3": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item4": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item5": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item6": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item7": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item8": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item9": {
+            "id": "none",
+            "quantity": 0
+        },
+        "item10": {
+            "id": "none",
+            "quantity": 0
+        }
+    },
+    "last_location": {
+        "x": 8,
+        "y": 10
+    }
+}

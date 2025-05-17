@@ -1,0 +1,13 @@
+{
+    "blocks":
+    {
+        "grass": {
+            "color": "Fore.GREEN + '◾' + Style.RESET_ALL",
+            "id": "grass"
+        },
+        "rock": {
+            "color": "Fore.LIGHTBLACK_EX + '◾' + Style.RESET_ALL",
+            "id": "rock"
+        }
+    }
+}
