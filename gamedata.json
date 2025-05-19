@@ -1,12 +1,11 @@
 {
-    "blocks":
-    {
+    "blocks": {
         "grass": {
-            "color": "Fore.GREEN + '◾' + Style.RESET_ALL",
+            "color": "\u001b[32m◾\u001b[0m",
             "id": "grass"
         },
         "rock": {
-            "color": "Fore.LIGHTBLACK_EX + '◾' + Style.RESET_ALL",
+            "color": "\u001b[90m◾\u001b[0m",
             "id": "rock"
         }
     }
