@@ -1,9 +1,6 @@
-import os
-import sys
-import time
-import tty
-import termios
-import json
+import os, sys, time, tty, termios, json
+
+title = "█▄▄ █   █▀█ █▀▀ █▄▀ █▀▀ █▀█ █ █▀▄  █▀▀ █▀█ █▀█ █▀▀ █▀▀\n█▄█ █▄▄ █▄█ █▄▄ █ █ █▄█ █▀▄ █ █▄▀  █▀  █▄█ █▀▄ █▄█ ██▄"
 
 # ANSI color codes
 ANSI = {
@@ -194,7 +191,8 @@ move_actions = {
 block_places = {"i": "up", "k": "down", "j": "left", "l": "right"}
 
 while True:
-    print("\033[H\033[J", end="")  # Clear screen
+    print("\033[H\033[J", end="")
+    print(title)
     print_landscape(inventory_slot, block_place)
     print(f"x: {player_x} y: {player_y} q: save and quit")
 
