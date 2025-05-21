@@ -101,6 +101,7 @@ def draw_landscape_block(x, y):
         print_colored("?", "RED")
 
 def print_landscape(slot, place="up"):
+    print("2dcraft")
     show_x, show_y = player_x, player_y
     if place == "up" and player_y > 0:
         show_y -= 1
