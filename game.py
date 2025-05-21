@@ -101,7 +101,6 @@ def draw_landscape_block(x, y):
         print_colored("?", "RED")
 
 def print_landscape(slot, place="up"):
-    print("2dcraft")
     show_x, show_y = player_x, player_y
     if place == "up" and player_y > 0:
         show_y -= 1
@@ -132,7 +131,7 @@ def print_landscape(slot, place="up"):
 
 # Block interaction
 def place_block():
-    global landscape
+    global landscape, inventory
     dx, dy = player_x, player_y
     if block_place == "up" and dy > 0:
         dy -= 1
@@ -143,19 +142,22 @@ def place_block():
     elif block_place == "right" and dx < WINDOW_WIDTH - 1:
         dx += 1
 
-    idx = inventory_slot - 1
-    block_id, qty = inventory[idx]
-    if block_id != "none" and qty > 0:
-        # Ensure the structure exists
+    # Get the block from the selected inventory slot (inventory_slot is 1-based)
+    slot_idx = inventory_slot - 1
+    block_id, quantity = inventory[slot_idx]
+
+    # Only place if there is a block and quantity > 0
+    if block_id != "none" and quantity > 0:
         if "y" not in landscape:
             landscape["y"] = {}
         if str(dy) not in landscape["y"]:
             landscape["y"][str(dy)] = {}
         landscape["y"][str(dy)][str(dx)] = block_id
-        inventory[idx] = (block_id, qty - 1)
+        # Decrease quantity in inventory
+        inventory[slot_idx] = (block_id, quantity - 1)
 
 def break_block():
-    global landscape
+    global landscape, inventory
     dx, dy = player_x, player_y
     if block_place == "up" and dy > 0:
         dy -= 1
@@ -166,7 +168,20 @@ def break_block():
     elif block_place == "right" and dx < WINDOW_WIDTH - 1:
         dx += 1
 
-    if landscape.get("y", {}).get(str(dy), {}).get(str(dx)) not in (None, "none"):
+    block_id = landscape.get("y", {}).get(str(dy), {}).get(str(dx))
+    if block_id not in (None, "none"):
+        # Add the block to inventory
+        for i, (inv_id, qty) in enumerate(inventory):
+            if inv_id == block_id:
+                inventory[i] = (inv_id, qty + 1)
+                break
+        else:
+            # If not found, add to first empty slot
+            for i, (inv_id, qty) in enumerate(inventory):
+                if inv_id == "none":
+                    inventory[i] = (block_id, 1)
+                    break
+        # Remove the block from the landscape
         landscape["y"][str(dy)][str(dx)] = "none"
 
 # Game loop
@@ -186,7 +201,13 @@ while True:
     key = get_key()
 
     if key in move_actions:
-        player_x, player_y = move_actions[key](player_x, player_y)
+        # Calculate the intended new position
+        new_x, new_y = move_actions[key](player_x, player_y)
+        # Check for collision with "rock"
+        block_id = landscape.get("y", {}).get(str(new_y), {}).get(str(new_x), "none")
+        if block_id != "rock":
+            player_x, player_y = new_x, new_y
+        # else: do not move if there is a rock
     elif key == "q":
         try:
             playerdata = {
