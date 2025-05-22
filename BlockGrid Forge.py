@@ -58,6 +58,25 @@ def get_block(x, y): return landscape.get("y", {}).get(str(y), {}).get(str(x), "
 def set_block(x, y, block_id):
     landscape.setdefault("y", {}).setdefault(str(y), {})[str(x)] = block_id
 
+def new_game():
+    global landscape, inventory, player_x, player_y
+    # Reset landscape: all "none"
+    landscape = {"y": {str(y): {str(x): "none" for x in range(WINDOW_WIDTH)} for y in range(WINDOW_HEIGHT)}}
+    # Reset inventory: all empty
+    inventory = [("none", 0) for _ in range(10)]
+    # Reset player position
+    player_x, player_y = 0, 0
+    # Save to files
+    pdata = {
+        "last_location": {"x": player_x, "y": player_y},
+        "inventory": {f"item{i+1}": {"id": "none", "quantity": 0} for i in range(10)}
+    }
+    with open(PLAYERDATA_PATH, 'w') as f:
+        json.dump(pdata, f, indent=4)
+    with open(LANDSCAPE_PATH, 'w') as f:
+        json.dump(landscape, f, indent=4)
+    print("New game started. Inventory and landscape reset.")
+    time.sleep(1)
 # === Drawing Functions ===
 def draw_inventory_slot(y, slot):
     print_colored("◾", "WHITE" if (y // 2) + 1 == slot else "YELLOW")
@@ -79,7 +98,7 @@ def draw_inventory_quantity(y):
 def draw_landscape_block(x, y):
     block_id = get_block(x, y)
     if block_id == "none":
-        print_colored("◾", "GREEN")
+        print_colored("◾", "MAGENTA")
     elif block_id in gamedata["blocks"]:
         print(gamedata["blocks"][block_id]["color"], end="")
     else:
@@ -163,23 +182,32 @@ def intro(title):
         print("\n" * 2)
         print(" " * 20 + ("[ New Game ]" if selected_y == 2 else "  New Game  ").center(20))
         print("\n" * 2)
-        print(" " * 20 + ("[ Quit ]" if selected_y == 3 else "   Quit    ").center(20))
+        print(" " * 20 + ("[ Options ]" if selected_y == 3 else "  Options   ").center(20))
+        print("\n" * 2)
+        print(" " * 20 + ("[ Quit ]" if selected_y == 4 else "   Quit     ").center(20))
         print("\n" * 2)
         key = get_key()
         if key == "w":
-            selected_y = 3 if selected_y == 1 else selected_y - 1
+            selected_y = 4 if selected_y == 1 else selected_y - 1
         elif key == "s":
-            selected_y = 1 if selected_y == 3 else selected_y + 1
+            selected_y = 1 if selected_y == 4 else selected_y + 1
         elif key in ("\n", "\r"):
             return selected_y
         time.sleep(0.1)
 
+selected_y = 1  # Make sure this is set before calling intro
 n = intro(title)
 if n == 1:
     print("Loading last save..."); time.sleep(1)
 elif n == 2:
-    sys.exit(0)
+    print("Starting new game..."); time.sleep(1)
+    new_game()
 elif n == 3:
+    print("Options menu (not implemented yet)."); time.sleep(1)
+    # Implement your options menu here
+    n = 1
+    n = intro(title)
+elif n == 4:
     print("Exiting game..."); time.sleep(1); sys.exit(0)
 
 while True:
@@ -189,7 +217,7 @@ while True:
     key = get_key()
     if key in move_actions:
         nx, ny = move_actions[key](player_x, player_y)
-        if get_block(nx, ny) != "rock":
+        if get_block(nx, ny) not in ("rock", "grass"):
             player_x, player_y = nx, ny
     elif key == "q":
         try:
