@@ -19,6 +19,8 @@ PLAYERDATA_PATH = os.path.join(SCRIPT_DIR, "playerdata.json")
 GAMEDATA_PATH = os.path.join(SCRIPT_DIR, "gamedata.json")
 LANDSCAPE_PATH = os.path.join(SCRIPT_DIR, "lanscape.json")
 
+selected_y = 1
+
 # Load landscape
 if os.path.exists(LANDSCAPE_PATH):
     with open(LANDSCAPE_PATH, 'r') as f:
@@ -190,9 +192,46 @@ move_actions = {
 }
 block_places = {"i": "up", "k": "down", "j": "left", "l": "right"}
 
+def intro(move, title):
+    global selected_y
+    while True:
+        print("\033[H\033[J")
+        print("\n\n")
+        print(title)
+        print()
+        print("    [ Continue ]" if selected_y == 1 else "      Continue")
+        print()
+        print("    [ New Game ]" if selected_y == 2 else "      New Game")
+        print()
+        print("    [ Quit ]" if selected_y == 3 else "      Quit")
+        key = get_key()
+        if key == "w":
+            if selected_y == 1:
+                selected_y = 3
+            else:
+                selected_y -= 1
+        elif key == "s":
+            if selected_y == 3:
+                selected_y = 1
+            else:
+                selected_y += 1
+        elif key in ("\n", "\r"):  # Accept both newline and carriage return
+            return selected_y
+        time.sleep(0.1)
+
+n = intro("w", title)
+if n == 1:
+    print("Loading last save...")
+    time.sleep(1)
+elif n == 2:
+    sys.exit(0)
+elif n == 3:
+    print("Exiting game...")
+    time.sleep(1)
+    sys.exit(0)
+
 while True:
     print("\033[H\033[J", end="")
-    print(title)
     print_landscape(inventory_slot, block_place)
     print(f"x: {player_x} y: {player_y} q: save and quit")
 
