@@ -1,12 +1,12 @@
 {
     "last_location": {
-        "x": 5,
-        "y": 8
+        "x": 15,
+        "y": 15
     },
     "inventory": {
         "item1": {
-            "id": "none",
-            "quantity": 0
+            "id": "grass",
+            "quantity": 18
         },
         "item2": {
             "id": "none",
